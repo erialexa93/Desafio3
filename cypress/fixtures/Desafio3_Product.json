@@ -1,0 +1,36 @@
+{
+    "products": {
+        "shirt": {
+            "name": "Black T-Shirt",
+            "price": 15
+        },
+        "pants": {
+            "name": "White Pants",
+            "price": 20
+        },
+        "cap": {
+            "name": "Red Cap",
+            "price": 10
+        },
+        "jacket": {
+            "name": "Black Jacket",
+            "price": 25
+        },
+        "sweter": {
+            "name": "Pink Sweater",
+            "price": 18
+        },
+        "shoes": {
+            "name": "White Shoes",
+            "price": 30
+        },
+        "socks": {
+            "name": "Black Socks",
+            "price": 10
+        },
+        "shorts": {
+            "name": "Beige Shorts",
+            "price": 19
+        }
+    }
+}
