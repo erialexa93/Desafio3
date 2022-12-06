@@ -5,10 +5,7 @@ export class ProductsPage {
     };
 
     clickAddButton(product) {
-        cy.xpath(product).click();
-    };
-
-    clickCloseButton() {
+        cy.xpath(`//button[@type='button' and @value='${product}']`).click();
         cy.xpath(this.closeButton).click();
     };
 

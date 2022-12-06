@@ -7,11 +7,11 @@ export class ShoppingCartPage {
     };
 
     verificarName(name){
-        return cy.xpath(name)
+        return cy.xpath(`//p[@id='productName' and @name='${name}']`)
     };
 
     verificarPrice(price){
-        return cy.xpath(price)
+        return cy.xpath(`//p[@id='productPrice' and @name='${price}']`)
     };
 
     clickShowTotalButton() {
@@ -19,6 +19,6 @@ export class ShoppingCartPage {
     };
 
     returnTotalPrice(totalprice){
-        return cy.xpath(totalprice)
+        return cy.xpath(`//p[@id='price']//parent::b[text()='${totalprice}']`)
     };
 };

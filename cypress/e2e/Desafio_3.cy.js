@@ -3,6 +3,8 @@ import {LoginPage} from '../support/pages/loginPage';
 import {HomePage} from '../support/pages/homePage';
 import {ProductsPage} from '../support/pages/productsPage';
 import {ShoppingCartPage} from '../support/pages/shoppingCartPage';
+import {RegisterPage} from '../support/pages/registerPage';
+//const constantes = require ('../support/constantes')
 
 describe('Desafio_3', () => {
     let fixlogin;
@@ -11,6 +13,7 @@ describe('Desafio_3', () => {
     const homePage = new HomePage;
     const productsPage = new ProductsPage;
     const shoppingCartPage = new ShoppingCartPage;
+    const registerPage = new RegisterPage;
     let sumProduct;
 
     before('Fixture/Datos', () => {
@@ -24,7 +27,7 @@ describe('Desafio_3', () => {
     
     beforeEach("Precondiciones", () => {
         cy.visit('');
-        cy.xpath("//span[@id='registertoggle']").dblclick();
+        registerPage.clickLoginLink();
         loginPage.typeUser(fixlogin.login.user.username);
         loginPage.typePass(fixlogin.login.user.password);
         loginPage.clickLoginButton();
@@ -33,26 +36,24 @@ describe('Desafio_3', () => {
     });
     
     it("Online Shop", () => {
-        productsPage.clickAddButton(`//button[@type='button' and @value='${fixproduct.products.cap.name}']`);
-        productsPage.clickCloseButton();
-        productsPage.clickAddButton(`//button[@type='button' and @value='${fixproduct.products.jacket.name}']`);
-        productsPage.clickCloseButton();
+        productsPage.clickAddButton(fixproduct.products.cap.name);
+        productsPage.clickAddButton(fixproduct.products.jacket.name);
         productsPage.clickGoToShopButton();
-        shoppingCartPage.verificarName(`//p[@id='productName' and @name='${fixproduct.products.cap.name}']`).invoke('text').then(texto => {
+        shoppingCartPage.verificarName(fixproduct.products.cap.name).invoke('text').then(texto => {
             assert.equal(texto, `${fixproduct.products.cap.name}`)
         });
-        shoppingCartPage.verificarName(`//p[@id='productName' and @name='${fixproduct.products.jacket.name}']`).invoke('text').then(texto => {
+        shoppingCartPage.verificarName(fixproduct.products.jacket.name).invoke('text').then(texto => {
             assert.equal(texto, `${fixproduct.products.jacket.name}`)
         });
-        shoppingCartPage.verificarPrice(`//p[@id='productPrice' and @name='${fixproduct.products.cap.price}']`).invoke('text').then(texto => {
+        shoppingCartPage.verificarPrice(fixproduct.products.cap.price).invoke('text').then(texto => {
             assert.equal(texto, `$${fixproduct.products.cap.price}`)
         });
-        shoppingCartPage.verificarPrice(`//p[@id='productPrice' and @name='${fixproduct.products.jacket.price}']`).invoke('text').then(texto => {
+        shoppingCartPage.verificarPrice(fixproduct.products.jacket.price).invoke('text').then(texto => {
             assert.equal(texto, `$${fixproduct.products.jacket.price}`)
         });
         shoppingCartPage.clickShowTotalButton();
         sumProduct=fixproduct.products.cap.price+fixproduct.products.jacket.price;
-        shoppingCartPage.returnTotalPrice(`//p[@id='price']//parent::b[text()='${sumProduct}']`).invoke('text').then(texto => {
+        shoppingCartPage.returnTotalPrice(sumProduct).invoke('text').then(texto => {
             assert.equal(texto,`${sumProduct}`)
         });
     });
