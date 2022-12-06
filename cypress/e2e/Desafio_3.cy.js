@@ -31,7 +31,6 @@ describe('Desafio_3', () => {
         loginPage.typeUser(fixlogin.login.user.username);
         loginPage.typePass(fixlogin.login.user.password);
         loginPage.clickLoginButton();
-        cy.wait(1500);
         homePage.clickOnlineShopLink();
     });
     
