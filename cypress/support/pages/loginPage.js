@@ -14,6 +14,6 @@ export class LoginPage {
     };
 
     clickLoginButton() {
-        cy.xpath(this.loginButton).click();
+        cy.xpath(this.loginButton,{timeout:10000}).click();
     };
 };
