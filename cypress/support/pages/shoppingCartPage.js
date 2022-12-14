@@ -21,4 +21,8 @@ export class ShoppingCartPage {
     returnTotalPrice(totalprice){
         return cy.xpath(`//p[@id='price']//parent::b[text()='${totalprice}']`)
     };
+
+    clickCheckOutButton() {
+        cy.xpath(this.checkoutButton).click();
+    }
 };

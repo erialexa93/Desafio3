@@ -1,40 +1,61 @@
 /// <reference types="cypress" />
-import {LoginPage} from '../support/pages/loginPage';
 import {HomePage} from '../support/pages/homePage';
 import {ProductsPage} from '../support/pages/productsPage';
 import {ShoppingCartPage} from '../support/pages/shoppingCartPage';
-import {RegisterPage} from '../support/pages/registerPage';
-//const constantes = require ('../support/constantes')
+import {CheckOutPage} from '../support/pages/checkOutPage';
+import {ReceiptPage} from '../support/pages/receiptPage';
+const constantes = require ('../support/constantes')
 
 describe('Desafio_3', () => {
-    let fixlogin;
+    let fixcheckout;
     let fixproduct;
-    const loginPage = new LoginPage;
     const homePage = new HomePage;
     const productsPage = new ProductsPage;
     const shoppingCartPage = new ShoppingCartPage;
-    const registerPage = new RegisterPage;
+    const checkOutPage = new CheckOutPage;
+    const receiptPage = new ReceiptPage;
     let sumProduct;
 
     before('Fixture/Datos', () => {
-        cy.fixture("Desafio3_Login").then(data => {
-            fixlogin = data;
+        cy.fixture("Desafio3_Product").then(datap => {
+            fixproduct = datap;
         });
-        cy.fixture("Desafio3_Product").then(data => {
-            fixproduct = data;
+        cy.fixture("Desafio3_Checkout").then(datac => {
+            fixcheckout = datac;
         });
-    });
-    
-    beforeEach("Precondiciones", () => {
-        cy.visit('');
-        registerPage.clickLoginLink();
-        loginPage.typeUser(fixlogin.login.user.username);
-        loginPage.typePass(fixlogin.login.user.password);
-        loginPage.clickLoginButton();
-        homePage.clickOnlineShopLink();
     });
     
     it("Online Shop", () => {
+        cy.request({
+            url: constantes.API.URL_POST_REGISTER,
+            method: "POST",
+            body: {
+                username: constantes.REGISTRO.USER,
+                password: constantes.REGISTRO.PASS,
+                gender: constantes.REGISTRO.GENDER,
+                day: constantes.REGISTRO.DAY,
+                month: constantes.REGISTRO.MONTH,
+                year: constantes.REGISTRO.YEAR
+            }
+        }).then(respuesta => {
+            expect(respuesta.status).is.equal(200)
+            expect(respuesta.body.newUser.username).is.equal(constantes.REGISTRO.USER)
+
+            cy.request({
+                url: constantes.API.URL_POST_LOGIN,
+                method: "POST",
+                body: {
+                    username: constantes.REGISTRO.USER,
+                    password: constantes.REGISTRO.PASS,
+                }
+            }).then(respuesta => {
+                expect(respuesta.status).is.equal(200)
+                window.localStorage.setItem('token',respuesta.body.token);
+                window.localStorage.setItem('user', respuesta.body.user.username)
+            });
+        });
+        cy.visit('');
+        homePage.clickOnlineShopLink();
         productsPage.clickAddButton(fixproduct.products.cap.name);
         productsPage.clickAddButton(fixproduct.products.jacket.name);
         productsPage.clickGoToShopButton();
@@ -55,6 +76,26 @@ describe('Desafio_3', () => {
         shoppingCartPage.returnTotalPrice(sumProduct).invoke('text').then(texto => {
             assert.equal(texto,`${sumProduct}`)
         });
+        shoppingCartPage.clickCheckOutButton();
+        checkOutPage.typeName(fixcheckout.checkout.data.name);
+        checkOutPage.typeLastName(fixcheckout.checkout.data.last_name);
+        checkOutPage.typeCardNumber(fixcheckout.checkout.data.card_number);
+        checkOutPage.clickPurchaseButton();
+        receiptPage.verificarName_CheckOut(fixcheckout.checkout.data.name).should('have.text',`${fixcheckout.checkout.data.name} ${fixcheckout.checkout.data.last_name} ${constantes.MENSAJES.MENSAJE_RECEIPT_OK}`);
+        receiptPage.verificarProducts(fixproduct.products.cap.name).should('have.text',`${fixproduct.products.cap.name}`);
+        receiptPage.verificarProducts(fixproduct.products.jacket.name).should('have.text',`${fixproduct.products.jacket.name}`);
+        receiptPage.verificarCardNumber(fixcheckout.checkout.data.card_number).should('have.text',`${fixcheckout.checkout.data.card_number}`);
+        receiptPage.verificarTotalPrice(sumProduct).should('have.text',`${constantes.MENSAJES.MENSAJE_RECEIPT_PRICE}${sumProduct}`);       
+
     });
 
+    after('Eliminar Usuario', () => {
+        cy.request({
+            url: `${constantes.API.URL_DELETE_USER}${constantes.REGISTRO.USER}`,
+            method: "DELETE"
+        }).then(respuesta => {
+            expect(respuesta.status).is.equal(200)
+            expect(respuesta.body.user.username).is.equal(constantes.REGISTRO.USER)
+        });
+    });
 });
