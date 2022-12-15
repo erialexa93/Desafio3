@@ -4,7 +4,7 @@ export class ReceiptPage {
     };
 
     verificarName_CheckOut(name){
-        return cy.xpath(`//p[text()='${name}']`)
+        return cy.xpath(`//p[text()='${name}']`,{timeout:10000})
     };
 
     verificarLastName(lastName){

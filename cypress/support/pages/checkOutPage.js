@@ -19,6 +19,6 @@ export class CheckOutPage {
     };
 
     clickPurchaseButton() {
-        cy.xpath(this.purchaseButton,{timeout:10000}).click();
+        cy.xpath(this.purchaseButton).click();
     };
 };
