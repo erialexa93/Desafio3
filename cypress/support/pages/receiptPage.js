@@ -1,10 +1,15 @@
 export class ReceiptPage {
     constructor() {
         this.thanksButton = "//button[text()='Thank you']";
+        this.progressBar = "//div[@role='progressbar']";
     };
 
+    esperaBarra(){
+       return cy.xpath(this.progressBar,{timeout:10000})
+    }
+
     verificarName_CheckOut(name){
-        return cy.xpath(`//p[text()='${name}']`,{timeout:10000})
+        return cy.xpath(`//p[text()='${name}']`)
     };
 
     verificarLastName(lastName){

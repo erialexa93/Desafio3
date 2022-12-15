@@ -81,6 +81,7 @@ describe('Desafio_3', () => {
         checkOutPage.typeLastName(fixcheckout.checkout.data.last_name);
         checkOutPage.typeCardNumber(fixcheckout.checkout.data.card_number);
         checkOutPage.clickPurchaseButton();
+        receiptPage.esperaBarra().should('not.to.exist');
         receiptPage.verificarName_CheckOut(fixcheckout.checkout.data.name).should('have.text',`${fixcheckout.checkout.data.name} ${fixcheckout.checkout.data.last_name} ${constantes.MENSAJES.MENSAJE_RECEIPT_OK}`);
         receiptPage.verificarProducts(fixproduct.products.cap.name).should('have.text',`${fixproduct.products.cap.name}`);
         receiptPage.verificarProducts(fixproduct.products.jacket.name).should('have.text',`${fixproduct.products.jacket.name}`);
